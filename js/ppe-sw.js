@@ -1,12 +1,12 @@
 var CACHE_NAME = 'ppe-sw-app';
 var urlsToCache = [
-  '/index.html',
-  '/css/ftsl.css',
-  '/css/materialize.css',
+  'index.html',
+  'css/ftsl.css',
+  'css/materialize.css',
   'init.js',
   'materialize.js',
   'registros/profissao.js',
-  'http://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js'
+  'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js'
 ];
 
 self.addEventListener('install', function(event) {
