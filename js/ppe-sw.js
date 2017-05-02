@@ -1,11 +1,11 @@
 var CACHE_NAME = 'ppe-sw-app';
 var urlsToCache = [
-  '/index.html',
-  '/css/ftsl.css',
-  '/css/materialize.css',
-  '/js/init.js',
-  '/js/materialize.js',
-  '/registros/profissao.js',
+  './index.html',
+  './css/ftsl.css',
+  './css/materialize.css',
+  './js/init.js',
+  './js/materialize.js',
+  './registros/profissao.js',
   'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js'
 ];
 
