@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+  <title>ppe-on/offline</title>
+  <script>
+      navigator.serviceWorker.register('js/ppe-sw.js').then(
+          function(){
+              console.log('Service Worker Registrado.');
+          },
+          function(erro){
+              console.log('Erro ao registrar service workers', erro);
+          }
+      );
+  </script
+  <!-- CSS  -->
+  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,500,700' rel='stylesheet' type='text/css'>
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
+  <link href="css/ftsl.css" type="text/css" rel="stylesheet" media="screen,projection" />
+  <style type="text/css"></style>
+</head>
+
+<body>
+  <section class="panel" style="background-color: rgb(41, 42, 51)">
+    <article class="blue-grey lighten-4" style="height: 520px">
+        <div class="container">
+            <div class="row">
+                <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s6">
+                    <input placeholder="Placeholder" id="first_name" type="text" class="validate">
+                    <label for="first_name">First Name</label>
+                    </div>
+                    <div class="input-field col s6">
+                    <input id="last_name" type="text" class="validate">
+                    <label for="last_name">Last Name</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s12">
+                    <input id="password" type="password" class="validate">
+                    <label for="password">Password</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                    <input id="email" type="email" class="validate">
+                    <label for="email">Email</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12">
+                    This is an inline input field:
+                    <div class="input-field inline">
+                        <input id="email" type="email" class="validate">
+                        <label for="email" data-error="wrong" data-success="right">Email</label>
+                    </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12">
+                        <a class="waves-effect waves-light btn"><i class="material-icons left">cloud</i>Enviar</a>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </article>
+  </section>
+
+  <!--  Scripts-->
+  <script src="js/ppe-sw.js"></script>
+  <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
+  <script src="js/materialize.js "></script>
+  <script src="js/init.js "></script>
+  <script src="registros/profissao.js "></script>
+</body>
+
+</html>
