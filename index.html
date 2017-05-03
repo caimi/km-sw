@@ -23,7 +23,7 @@
   <style type="text/css"></style>
 </head>
 
-<body>
+<body ng-app="app" ng-controller="PessoaController">
   <section class="panel" style="background-color: rgb(41, 42, 51)">
     <article class="blue-grey lighten-4" style="height: 520px">
         <div class="container">
@@ -31,39 +31,30 @@
                 <form class="col s12">
                 <div class="row">
                     <div class="input-field col s6">
-                    <input placeholder="Placeholder" id="first_name" type="text" class="validate">
+                    <input ng-model="pessoa.nome" placeholder="Placeholder" id="first_name" type="text" class="validate">
                     <label for="first_name">First Name</label>
                     </div>
                     <div class="input-field col s6">
-                    <input id="last_name" type="text" class="validate">
+                    <input ng-model="pessoa.sobrenome" id="last_name" type="text" class="validate">
                     <label for="last_name">Last Name</label>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="input-field col s12">
-                    <input id="password" type="password" class="validate">
+                    <input ng-model="pessoa.password" id="password" type="password" class="validate">
                     <label for="password">Password</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
-                    <input id="email" type="email" class="validate">
+                    <input ng-model="pessoa.email" id="email" type="email" class="validate">
                     <label for="email">Email</label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col s12">
-                    This is an inline input field:
-                    <div class="input-field inline">
-                        <input id="email" type="email" class="validate">
-                        <label for="email" data-error="wrong" data-success="right">Email</label>
-                    </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12">
-                        <a class="waves-effect waves-light btn"><i class="material-icons left">cloud</i>Enviar</a>
+                        <a ng-click="savePessoa()" class="waves-effect waves-light btn"><i class="material-icons left">cloud</i>Enviar</a>
                     </div>
                 </div>
                 </form>
@@ -77,6 +68,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
   <script src="js/materialize.js "></script>
   <script src="js/init.js "></script>
+  <script src="js/angular-indexed-db.min.js"></script>
+  <script src="js/main.js"></script>
   <script src="registros/profissao.js "></script>
 </body>
 

@@ -6,6 +6,8 @@ var urlsToCache = [
   './css/materialize.css',
   './js/init.js',
   './js/materialize.js',
+  './js/angular-indexed-db.min.js',
+  './js/main.js',
   './registros/profissao.js',
   'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js'
 ];
