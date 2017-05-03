@@ -1,0 +1,24 @@
+{
+  "name": "km-sw",
+  "version": "1.0.0",
+  "description": "teste de service workers",
+  "main": "ppe-sw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caimi/km-sw.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/caimi/km-sw/issues"
+  },
+  "homepage": "https://github.com/caimi/km-sw#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "ejs": "^2.5.6",
+    "express": "^4.15.2"
+  }
+}

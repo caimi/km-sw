@@ -1,67 +1,7 @@
 var module = angular.module('app', ['indexedDB']);
 
-module.config(function ($indexedDBProvider) {
-    $indexedDBProvider.connection('myIndexedDB')
-      .upgradeDatabase(1, function(event, db, tx){
-        var objStore = db.createObjectStore('pessoa', {keyPath: 'id'});
-        objStore.createIndex('name_idx', 'nome', {unique: false});
-      });
-});
-
-
-module.service('PessoaService', function ($indexedDB, $q) {
+module.service('PessoaService', function (PessoaDAO, $q) {
     
-    this.listFromIndexDB = function() {
-      var deferred = $q.defer();
-      $indexedDB.openStore('pessoa', function(store){
-         store.getAll().then(function(pessoas) {    
-           deferred.resolve(pessoas);
-         });
-      });
-      return deferred.promise;
-    }
-
-
-    this.salvarIndexDB = function(pessoa) {
-      var deferred = $q.defer();
-      $indexedDB.openStore('pessoa', function(store){
-        store.insert(pessoa).then(function(e){
-          deferred.resolve(e);
-        });
-      });
-      return deferred.promise;
-    }
-
-    this.removeIndexDB = function(id) {
-      var deferred = $q.defer();
-      $indexedDB.openStore('pessoa', function(store){
-        store.delete(id).then(function (e) {
-          deferred.resolve(e);
-        });        
-      });
-      return deferred.promise;
-    }
-
-    this.loadFromIndexDB = function(id) {
-      var deferred = $q.defer();
-      $indexedDB.openStore('pessoa', function(store){
-        store.find(id).then(function(e){
-          deferred.resolve(e);
-        });
-      });
-      return deferred.promise;
-    };
-    
-    this.upsertIndexDB = function(pessoa) {
-      var deferred = $q.defer();
-      $indexedDB.openStore('pessoa', function(store){
-        store.upsert(pessoa).then(function (e) {
-          deferred.resolve(e);
-        });
-      });
-      return deferred.promise;  
-    }
-
     this.generateID = function() {
       var dt = new Date();
       return dt.getDay() + '' + dt.getMonth() + '' + dt.getYear() + 
@@ -70,7 +10,7 @@ module.service('PessoaService', function ($indexedDB, $q) {
 
     this.list = function() {
       var deferred = $q.defer();
-      this.listFromIndexDB().then(function(results){
+      PessoaDAO.listFromIndexDB().then(function(results){
         deferred.resolve(results);
       });
       return deferred.promise;
@@ -80,12 +20,12 @@ module.service('PessoaService', function ($indexedDB, $q) {
       var deferred = $q.defer();
       if (!pessoa.id) {
         pessoa.id = this.generateID();
-        this.salvarIndexDB(pessoa).then(function(e){
+        PessoaDAO.salvarIndexDB(pessoa).then(function(e){
           deferred.resolve(e);
         });
       }
       else {
-        this.upsertIndexDB(pessoa).then(function(res){
+        PessoaDAO.upsertIndexDB(pessoa).then(function(res){
           deferred.resolve(res);
         });
       }
@@ -94,7 +34,7 @@ module.service('PessoaService', function ($indexedDB, $q) {
 
     this.remove = function(id) {
       var deferred = $q.defer();
-      this.removeIndexDB(id).then(function(e){
+      PessoaDAO.removeIndexDB(id).then(function(e){
         deferred.resolve(e);
       });
       return deferred.promise;
@@ -102,7 +42,7 @@ module.service('PessoaService', function ($indexedDB, $q) {
 
     this.load = function(id) {
       var deferred = $q.defer();
-      this.loadFromIndexDB(id).then(function(e){
+      PessoaDAO.loadFromIndexDB(id).then(function(e){
         deferred.resolve(e);
       });
       return deferred.promise;
