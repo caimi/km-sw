@@ -1,4 +1,5 @@
 var CACHE_NAME = 'ppe-sw-app';
+var version = "10";
 var urlsToCache = [
   './',
   './index.html',

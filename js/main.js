@@ -78,4 +78,5 @@ module.controller('PessoaController', function ($scope, PessoaService) {
       }); 
     }
 
+    $scope.online = true;
 });

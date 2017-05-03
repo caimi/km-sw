@@ -32,8 +32,10 @@
                     <div class="row blue-grey lighten-4">
                         <div class="col s6"><span class=" blue-grey-text"> usuario:</div>
                         <div class="col s6">
-                            <i class="material-icons green-text right" style="text-decoration: bold" ng-show="true">cloud_queue</i>
-                            <i class="material-icons red-text right" ng-show="false">cloud_off</i>
+                            <div class="right-align">
+                                <a class="btn-floating btn-large waves-effect waves-light green" ng-show="online"><i class="material-icons"  style="text-decoration: bold">cloud_queue</i></a>
+                                <a class="btn-floating btn-large waves-effect waves-light red" ng-show="!online"><i class="material-icons"  style="text-decoration: bold">cloud_off</i></a>
+                            </div>
                         </div>
                     </div>
             </div>
