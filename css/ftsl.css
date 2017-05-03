@@ -4,6 +4,11 @@ body{
   background: #cacaca;
 }
 
+h1{
+  font-size: 18px;
+  color: #33578F
+}
+
 .countdown-box {
 	float:left;
 	width:114px;

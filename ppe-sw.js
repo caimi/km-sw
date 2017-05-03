@@ -10,6 +10,7 @@ var urlsToCache = [
   './js/angular-indexed-db.min.js',
   './js/indexdb-service.js',
   './js/main.js',
+  './js/ui-bootstrap-tpls-2.5.0.min.js',
   './registros/profissao.js',
   'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js'
 ];
