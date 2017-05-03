@@ -21,6 +21,7 @@ module.service('PessoaService', function ($indexedDB, $q) {
       return deferred.promise;
     }
 
+
     this.salvarIndexDB = function(pessoa) {
       var deferred = $q.defer();
       $indexedDB.openStore('pessoa', function(store){
