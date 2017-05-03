@@ -24,7 +24,24 @@
 </head>
 
 <body ng-app="app" ng-controller="PessoaController" ng-init="list()">
-  <section class="panel" style="background-color: rgb(41, 42, 51);">
+
+  <section class="" style="background-color: rgb(41, 42, 51);">
+    <article class="blue-grey lighten-4" style="height: 520px">
+<nav style="background: #333333">
+      <div class="container">
+            <div class="row blue-grey lighten-2">
+                <div class="col s6">usuario:</div>
+                <div class="col s6">
+                    <i class="material-icons green-text right" style="text-decoration: bold" ng-show="true">cloud_queue</i>
+                    <i class="material-icons red-text right" ng-show="false">cloud_off</i>
+                </div>
+            </div>
+      </div>
+</nav>
+    </article>
+  </section>
+
+  <section class="" style="background-color: rgb(41, 42, 51);">
     <article class="blue-grey lighten-4" style="height: 520px">
         <div class="container">
             <div class="row">
@@ -61,6 +78,8 @@
             </div>
         </div>
     </article>
+
+    <section class="" style="background-color: rgb(41, 42, 51);">
     <article class="blue-grey lighten-4" style="height: 520px">
        <div>
                  <table class="table table-striped table-bordered" ng-show="pessoas && pessoas.length > 0">

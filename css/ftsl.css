@@ -17,9 +17,6 @@ body{
 	transform:translateZ(0);
 }
 
-
-
-
 .panel {
   width: 100%;
 }
@@ -28,8 +25,8 @@ body{
   margin-bottom: 400px
 }
 article {
-  min-width: 960px;
-  width: 1140px;
+ /*min-width: 960px;*/
+  /*width: 1140px;*/
   /*height: 420px;*/
   margin: auto auto;
   background: rgba(255, 255, 255, 0.1);
