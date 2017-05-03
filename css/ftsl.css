@@ -1,6 +1,7 @@
 /* Custom Stylesheet */
 body{
-  background: linear-gradient(to right, rgba(8,43,65,0) 0%, rgba(8,43,65,1) 60%);
+  /*background: linear-gradient(to right, rgba(8,43,65,0) 0%, rgba(8,43,65,1) 60%);*/
+  background: #cacaca;
 }
 
 .countdown-box {
