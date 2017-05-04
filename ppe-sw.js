@@ -7,6 +7,7 @@ var urlsToCache = [
   './js/init.js',
   './js/angular-indexed-db.min.js',
   './js/indexdb-service.js',
+  './js/nuvem-service.js',
   './js/main.js',
   './js/ui-bootstrap-tpls-2.5.0.min.js',
   './js/offline.min.js',

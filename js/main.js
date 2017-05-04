@@ -1,6 +1,6 @@
 var module = angular.module('app', ['indexedDB']);
 
-module.service('PessoaService', function (PessoaDAO, $q) {
+module.service('PessoaService', function (PessoaDAO, NuvemService, $q) {
     
     this.generateID = function() {
       var dt = new Date();
@@ -21,7 +21,14 @@ module.service('PessoaService', function (PessoaDAO, $q) {
       if (!pessoa.id) {
         pessoa.id = this.generateID();
         PessoaDAO.salvarIndexDB(pessoa).then(function(e){
-          deferred.resolve(e);
+          NuvemService.salvar(pessoa).then(function(resNuvem){
+            pessoa.sincronizado = true;
+            PessoaDAO.upsertIndexDB(pessoa).then(function(e2){
+              deferred.resolve(e);
+            });
+          },function(resNuvem) {
+              deferred.resolve(resNuvem);
+          })
         });
       }
       else {

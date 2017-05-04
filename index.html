@@ -86,6 +86,7 @@
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Email</th>
+                            <th>Sincronizado</th>
                             <th>#</th>
                         </tr>
                     </thead>
@@ -94,6 +95,7 @@
                             <td>{{pessoa.nome}}</td>
                             <td>{{pessoa.sobrenome}}</td>
                             <td>{{pessoa.email}}</td>
+                            <td>{{(pessoa.sincronizado)?'Sim':'Não'}}</td>
                             <td>
                               <a href="javascript:void(0)" ng-click="edit(pessoa.id)">edit</a> | <a href="javascript:void(0)" ng-click="delete(pessoa.id)">delete</a>
                             </td>
@@ -113,6 +115,7 @@
   <script src="js/offline.min.js"></script>
   <script src="js/main.js"></script>
   <script src="js/indexdb-service.js"></script>
+  <script src="js/nuvem-service.js"></script>
   <script src="js/init.js "></script>
   <script src="registros/profissao.js "></script>
 </body>
