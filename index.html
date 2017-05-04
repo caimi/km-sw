@@ -34,8 +34,8 @@
                 <div class="col-md-6"><span class=" blue-grey-text"> usuario:</span></div>
                 <div class="col-md-6">
                     <div class="text-right">
-                        <a style="background: #5cb85c; padding: 5px;color: white; display: inline-block" ng-show="online"><i class="material-icons"  style="text-decoration: bold">cloud_queue</i></a>
-                        <a style="background: #d9534f; padding: 5px; color: white; display: inline-block"  ng-show="!online"><i class="material-icons"  style="text-decoration: bold">cloud_off</i></a>
+                        <a id="online" style="background: #5cb85c; padding: 5px;color: white; display: inline-block" ><i class="material-icons"  style="text-decoration: bold">cloud_queue</i></a>
+                        <a id="offline" style="background: #d9534f; padding: 5px; color: white; display: inline-block" ><i class="material-icons"  style="text-decoration: bold">cloud_off</i></a>
                     </div>
                 </div>
             </div>
@@ -106,13 +106,13 @@
   
 
   <!--  Scripts-->
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
   <script src="js/ui-bootstrap-tpls-2.5.0.min.js"></script>
   <script src="js/angular-indexed-db.min.js"></script>
+  <script src="js/offline.min.js"></script>
   <script src="js/main.js"></script>
   <script src="js/indexdb-service.js"></script>
-  <script src="js/materialize.js "></script>
   <script src="js/init.js "></script>
   <script src="registros/profissao.js "></script>
 </body>

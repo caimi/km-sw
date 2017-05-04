@@ -1,5 +1,7 @@
 (function ($) {
   $(function () {
+    Offline.check();
+    updateIcon();
     /*$('.button-collapse').sideNav();
     $('.parallax').parallax();
     $("#footerContent").load("footer.html");
@@ -33,6 +35,16 @@
       .addTo(controller);
   }
 });*/
+
+function updateIcon(){
+  if( Offline.state == 'up'){
+    $("#online").css('display', 'inline-block');
+    $("#offline").css('display', 'none');
+  } else {
+    $("#offline").css('display', 'inline-block');
+    $("#online").css('display', 'none');
+  }
+}
 
 function getTimeRemaining(endtime){
   var t = Date.parse(endtime) - Date.parse(new Date());

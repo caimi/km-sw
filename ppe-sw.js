@@ -1,16 +1,15 @@
 var CACHE_NAME = 'ppe-sw-app';
-var version = "10";
+var version = "12";
 var urlsToCache = [
   './',
   './index.html',
   './css/ftsl.css',
-  './css/materialize.css',
   './js/init.js',
-  './js/materialize.js',
   './js/angular-indexed-db.min.js',
   './js/indexdb-service.js',
   './js/main.js',
   './js/ui-bootstrap-tpls-2.5.0.min.js',
+  './js/offline.min.js',
   './registros/profissao.js',
   'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js'
 ];
@@ -38,7 +37,6 @@ function fromNetwork(request, timeout) {
      fetch(request).then(function (response) {
       clearTimeout(timeoutId);
       fulfill(response);
-
     }, reject);
   });
 }
