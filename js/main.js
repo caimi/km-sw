@@ -1,6 +1,6 @@
-var module = angular.module('app', ['indexedDB']);
+var module = angular.module('app', ['indexedDB','angular.ping']);
 
-module.service('PessoaService', function (PessoaDAO, NuvemService, $q) {
+module.service('PessoaService', function (PessoaDAO, NuvemService, netTesting, $q) {
     
     this.generateID = function() {
       var dt = new Date();
@@ -10,8 +10,16 @@ module.service('PessoaService', function (PessoaDAO, NuvemService, $q) {
 
     this.list = function() {
       var deferred = $q.defer();
-      PessoaDAO.listFromIndexDB().then(function(results){
-        deferred.resolve(results);
+      NuvemService.listar().then(function(list){
+        var lista = [];
+        PessoaDAO.listFromIndexDB().then(function(results){
+          lista = lista.concat(results.filter(function(item){return !item.sincronizado})).concat(list);
+          deferred.resolve(lista);
+        });
+      },function(err){
+        PessoaDAO.listFromIndexDB().then(function(results){
+          deferred.resolve(results);
+        });
       });
       return deferred.promise;
     }
@@ -20,11 +28,12 @@ module.service('PessoaService', function (PessoaDAO, NuvemService, $q) {
       var deferred = $q.defer();
       if (!pessoa.id) {
         pessoa.id = this.generateID();
+        pessoa.ativo = true;
         PessoaDAO.salvarIndexDB(pessoa).then(function(e){
           NuvemService.salvar(pessoa).then(function(resNuvem){
             pessoa.sincronizado = true;
             PessoaDAO.upsertIndexDB(pessoa).then(function(e2){
-              deferred.resolve(e);
+              deferred.resolve(e2);
             });
           },function(resNuvem) {
               deferred.resolve(resNuvem);
@@ -33,25 +42,59 @@ module.service('PessoaService', function (PessoaDAO, NuvemService, $q) {
       }
       else {
         PessoaDAO.upsertIndexDB(pessoa).then(function(res){
-          deferred.resolve(res);
+          NuvemService.atualizar(pessoa).then(function(resNuvem){
+            pessoa.sincronizado = true;
+            PessoaDAO.upsertIndexDB(pessoa).then(function(e2){
+              deferred.resolve(e2);
+            });
+          },function(resNuvem) {
+              deferred.resolve(resNuvem);
+          })
         });
       }
       return deferred.promise;
     }
 
-    this.remove = function(id) {
+    this.remove = function(pessoa) {
       var deferred = $q.defer();
-      PessoaDAO.removeIndexDB(id).then(function(e){
-        deferred.resolve(e);
-      });
+      NuvemService.remover(pessoa).then(function(resNuvem){
+        PessoaDAO.removeIndexDB(pessoa.id).then(function(e){
+          deferred.resolve(e);
+        });
+      },function(resNuvem) {
+        pessoa.ativo = false;
+        pessoa.sincronizado = false;
+        PessoaDAO.upsertIndexDB(pessoa).then(function(e){
+          deferred.resolve(e);
+        });
+      })
       return deferred.promise;
     }
 
     this.load = function(id) {
       var deferred = $q.defer();
-      PessoaDAO.loadFromIndexDB(id).then(function(e){
-        deferred.resolve(e);
+      PessoaDAO.loadFromIndexDB(id).then(function(pessoa){
+        if (!pessoa.sincronizado) {
+          deferred.resolve(pessoa);   
+        }
+        else {
+          NuvemService.obter(id).then(function(pessoaNuvem){
+            deferred.resolve(pessoaNuvem); 
+          },
+          function(err){
+            deferred.resolve(pessoa);
+          });
+        }
+      },
+      function(err){
+        NuvemService.obter(id).then(function(pessoaNuvem){
+          deferred.resolve(pessoaNuvem); 
+        },
+        function(err){
+          deferred.reject(err);
+        });
       });
+
       return deferred.promise;
     }
 
@@ -79,9 +122,10 @@ module.controller('PessoaController', function ($scope, PessoaService) {
       }); 
     }
 
-    $scope.edit = function (id) {
-      PessoaService.load(id).then(function(result){
+    $scope.edit = function (pessoa) {
+      PessoaService.load(pessoa.id).then(function(result){
         $scope.pessoa = result;
+        $scope.pessoa.sincronizado = false;
       }); 
     }
 

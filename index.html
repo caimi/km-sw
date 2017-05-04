@@ -97,7 +97,7 @@
                             <td>{{pessoa.email}}</td>
                             <td>{{(pessoa.sincronizado)?'Sim':'Não'}}</td>
                             <td>
-                              <a href="javascript:void(0)" ng-click="edit(pessoa.id)">edit</a> | <a href="javascript:void(0)" ng-click="delete(pessoa.id)">delete</a>
+                              <a href="javascript:void(0)" ng-click="edit(pessoa)">edit</a> | <a href="javascript:void(0)" ng-click="delete(pessoa)">delete</a>
                             </td>
                         </tr>
                     </tbody>
@@ -112,6 +112,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
   <script src="js/ui-bootstrap-tpls-2.5.0.min.js"></script>
   <script src="js/angular-indexed-db.min.js"></script>
+  <script src="js/angular-ping.js"></script>
   <script src="js/offline.min.js"></script>
   <script src="js/main.js"></script>
   <script src="js/indexdb-service.js"></script>

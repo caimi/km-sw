@@ -1,11 +1,12 @@
 var CACHE_NAME = 'ppe-sw-app';
-var version = "12";
+var version = "13";
 var urlsToCache = [
   './',
   './index.html',
   './css/ftsl.css',
   './js/init.js',
   './js/angular-indexed-db.min.js',
+  './js/angular-ping.js',
   './js/indexdb-service.js',
   './js/nuvem-service.js',
   './js/main.js',
@@ -45,7 +46,7 @@ function fromNetwork(request, timeout) {
 function fromCache(request) {
   return caches.open(CACHE_NAME).then(function (cache) {
     return cache.match(request).then(function (matching) {
-      return matching || Promise.reject('no-match');
+      return matching || fetch(request);
     });
   });
 }
