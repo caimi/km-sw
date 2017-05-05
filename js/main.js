@@ -10,11 +10,28 @@ module.service('PessoaService', function (PessoaDAO, NuvemService, netTesting, $
 
     this.list = function() {
       var deferred = $q.defer();
-      NuvemService.listar().then(function(list){
+      NuvemService.listar().then(function(listServer){
         var lista = [];
         PessoaDAO.listFromIndexDB().then(function(results){
-          lista = lista.concat(results.filter(function(item){return !item.sincronizado})).concat(list);
-          deferred.resolve(lista);
+          var listToReturn = [];
+          lista = lista.concat(results.filter(function(item){return !item.sincronizado}));
+          listToReturn = listToReturn.concat(lista);
+
+          for(var i=0;i<listServer.length;i++) {
+            var hasValue = false;
+            for(var j=0;i<lista.length;j++) {
+              if(lista[j].id == listServer[i].id) {
+                hasValue = true;
+                break;
+              }
+            }
+            
+            if (!hasValue) {
+              listToReturn.push(listServer[i]);
+            }
+          }
+         
+          deferred.resolve(listToReturn);
         });
       },function(err){
         PessoaDAO.listFromIndexDB().then(function(results){
@@ -176,6 +193,7 @@ module.controller('PessoaController', function ($scope, PessoaService) {
       PessoaService.sincronizar(pessoa).then(function(res){
         $scope.list();
       },function(err){
+        pessoa.sincronizado = false;
         alert("Não foi possivel sincronizar.");
       });
     };

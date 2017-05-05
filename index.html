@@ -89,15 +89,19 @@
                             <th>Ativo</th>
                             <th>Sincronizado</th>
                             <th>#</th>
+                            <th>#</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="pessoa in pessoas">
+                        <tr ng-repeat="pessoa in pessoas track by pessoa.id">
                             <td>{{pessoa.nome}}</td>
                             <td>{{pessoa.sobrenome}}</td>
                             <td>{{pessoa.email}}</td>
                             <td>{{(pessoa.ativo)?'Sim':'Não'}}</td>
                             <td>{{(pessoa.sincronizado)?'Sim':'Não'}}</td>
+                            <td>
+                                <button ng-click="sincronizar(pessoa)">Sincronizar</button>
+                            </td>
                             <td>
                               <a href="javascript:void(0)" ng-click="edit(pessoa)">edit</a> | <a href="javascript:void(0)" ng-click="delete(pessoa)">delete</a>
                             </td>
