@@ -98,6 +98,49 @@ module.service('PessoaService', function (PessoaDAO, NuvemService, netTesting, $
       return deferred.promise;
     }
 
+    this.sincronizar = function(pessoa) {
+      var deferred = $q.defer();
+      if (!pessoa.sincronizado) {
+        if(!pessoa.ativo) {
+          NuvemService.obter(pessoa.id).then(function(pessoaNuvem){
+            NuvemService.remover(pessoa).then(function(resNuvem){
+              PessoaDAO.removeIndexDB(pessoa.id).then(function(e){
+                deferred.resolve(e);
+              });
+           }).then(function(err){deferred.reject(resNuvem)});
+          },function(res){
+              PessoaDAO.removeIndexDB(pessoa.id).then(function(e){
+                deferred.resolve(e);
+            });
+          });
+        }
+        else {
+          NuvemService.obter(pessoa.id).then(function(pessoaNuvem){
+            NuvemService.atualizar(pessoa).then(function(resNuvem){
+            pessoa.sincronizado = true;
+            PessoaDAO.upsertIndexDB(pessoa).then(function(e2){
+              deferred.resolve(e2);
+            });
+            },function(resNuvem) {
+               deferred.reject(resNuvem);
+            })
+          },
+          function(resp){
+            NuvemService.salvar(pessoa).then(function(resNuvem){
+              pessoa.sincronizado = true;
+              PessoaDAO.upsertIndexDB(pessoa).then(function(e2){
+                deferred.resolve(e2);
+              });
+          },function(err) {
+              deferred.reject(err);
+          })
+          });
+        }
+      }
+
+      return deferred.promise;
+    }
+
 });
 
 module.controller('PessoaController', function ($scope, PessoaService) {
@@ -128,6 +171,14 @@ module.controller('PessoaController', function ($scope, PessoaService) {
         $scope.pessoa.sincronizado = false;
       }); 
     }
+
+    $scope.sincronizar = function(pessoa) {
+      PessoaService.sincronizar(pessoa).then(function(res){
+        $scope.list();
+      },function(err){
+        alert("Não foi possivel sincronizar.");
+      });
+    };
 
     $scope.online = true;
 });

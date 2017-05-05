@@ -86,6 +86,7 @@
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Email</th>
+                            <th>Ativo</th>
                             <th>Sincronizado</th>
                             <th>#</th>
                         </tr>
@@ -95,6 +96,7 @@
                             <td>{{pessoa.nome}}</td>
                             <td>{{pessoa.sobrenome}}</td>
                             <td>{{pessoa.email}}</td>
+                            <td>{{(pessoa.ativo)?'Sim':'Não'}}</td>
                             <td>{{(pessoa.sincronizado)?'Sim':'Não'}}</td>
                             <td>
                               <a href="javascript:void(0)" ng-click="edit(pessoa)">edit</a> | <a href="javascript:void(0)" ng-click="delete(pessoa)">delete</a>

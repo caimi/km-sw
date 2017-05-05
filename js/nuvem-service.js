@@ -22,15 +22,23 @@ module.service('NuvemService', function ($q,$http) {
       var command = '{ "$set" : ' + JSON.stringify(pessoa) + ' }' ;
       $http.put(baseURL, command).success(function(resp) {
         deferred.resolve(resp);
+      }).error(function(err,status){
+         deferred.reject(err);
       });
       return deferred.promise;
     }
 
     this.remover = function(pessoa) {
       var deferred = $q.defer();
-      var command = '{ "$set" : ' + JSON.stringify(pessoa) + ' }' ;
-      $http.put(baseURL, command).success(function(resp) {
-        deferred.resolve(resp);
+      this.obter(pessoa.id).then(function(pess){
+        var url = 'https://api.mlab.com/api/1/databases/pessoa/collections/pessoa/' + pess._id.$oid + '?apiKey=h5HXau-eQBL5VoAn_xk5puC-FRBF4RH1';
+        $http.delete(url).success(function(resp) {
+          deferred.resolve(resp);
+        }).error(function(err,status){
+          deferred.reject(err);
+        });
+      }, function(err){
+          deferred.reject(err);
       });
       return deferred.promise;
     }
@@ -58,7 +66,7 @@ module.service('NuvemService', function ($q,$http) {
           deferred.resolve(resp[0]);
         }
         else {
-          deferred.reject(err);  
+          deferred.reject(resp);  
         } 
       }).error(function(err){
          deferred.reject(err);
