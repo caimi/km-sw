@@ -24,18 +24,22 @@
   <style type="text/css"></style>
 </head>
 
-<body ng-app="app" ng-controller="PessoaController" ng-init="list()">
+<body ng-app="app" ng-controller="PessoaController" ng-init="listarUfs()">
 
   <section class="" style="background-color: #cacaca; padding: 10px">
     <article class="blue-grey lighten-4">
         <nav style="background: #cacaca">
             <div class="container">
             <div class="col-md-12">
-                <div class="col-md-6"><span class=" blue-grey-text"> usuario:</span></div>
+                <div class="col-md-6">
+                    <span class=" blue-grey-text"> 
+                        <input type="checkbox" ng-change="changeConnection(connection)" ng-model="connection" />Online
+                    </span>
+                </div>
                 <div class="col-md-6">
                     <div class="text-right">
-                        <a id="online" style="background: #5cb85c; padding: 5px;color: white; display: inline-block" ><i class="material-icons"  style="text-decoration: bold">cloud_queue</i></a>
-                        <a id="offline" style="background: #d9534f; padding: 5px; color: white; display: inline-block" ><i class="material-icons"  style="text-decoration: bold">cloud_off</i></a>
+                        <a ng-show="online" style="background: #5cb85c; padding: 5px;color: white; display: inline-block" ><i class="material-icons"  style="text-decoration: bold">cloud_queue</i></a>
+                        <a ng-show="!online" style="background: #d9534f; padding: 5px; color: white; display: inline-block" ><i class="material-icons"  style="text-decoration: bold">cloud_off</i></a>
                     </div>
                 </div>
             </div>
@@ -44,7 +48,7 @@
     </article>
   </section>
 
-  <section class="" style="background-color: #eaeaea; margin-top: 0px;">
+  <section ng-show="page == 'novo'" class="" style="background-color: #eaeaea; margin-top: 0px;">
     <article class="blue-grey lighten-4" style="height: auto">
         <div class="container">
             <h1> App Demo Offline</h1>
@@ -60,48 +64,62 @@
                         <input ng-model="pessoa.sobrenome" placeholder="sobrenome" id="last_name" type="text" class="validate form-control">
                     </div>
                     <div class="form-group">
-                        <label for="last_name">password</label>
-                        <input ng-model="pessoa.password" placeholder="password" id="password" type="password" class="validate form-control">
+                        <label for="uf">Uf:</label>
+                        <select ng-model="pessoa.uf" id="uf" class="validate form-control">
+                          <option ng-if="ufs && ufs.length > 0" ng-repeat="uf in ufs" value="{{uf.nome}}">{{uf.nome}}</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label for="last_name">email</label>
+                        <label for="last_name">Email</label>
                         <input ng-model="pessoa.email" placeholder="email" id="email" type="email" class="validate form-control">
                     </div>
-                    <div class="col-sm-12">
+                    <div class="col-sm-6">
                         <a ng-click="savePessoa()" class="btn btn-primary"><i class="material-icons left">done</i> Enviar</a>
+                        <a ng-click="cancelar()" class="btn btn-danger"><i class="material-icons right">cancel</i> Cancelar</a>
                     </div>
                 </div>
                 </form>
             </div>
         </div>
     </article>
-  <section class="" style="margin-top: 10px" ng-show="pessoas && pessoas.length > 0">
+  </section>
+  <section ng-show="page == 'listar'" class="" style="margin-top: 10px">
     <article class="blue-grey lighten-4" style="height: auto">
         <div class="container">
+            <div class="row">
+              <div class="col-sm-4">
+                <button ng-click="goNovo()" class="btn btn-info">
+                    Novo
+                </button>
+              </div>
+            </div>
+            <br/>
+            <br/>
+            <div class="row">
+              <div class="col-sm-6">
+                <button ng-disabled="!online" ng-click="listarOnline()" class="btn btn-primary">Listar Online</button>
+                <button ng-click="listarOffline()" class="btn btn-primary">Listar Offline</button>
+              </div>
+            </div>
+            <div class="row">    
             <div style="height: 1px; background: #999; margin-top: 30px"></div>
             <h1>Dados salvos</h1>
-                 <table class="table table-striped ">
+                 <table ng-show="pessoas && pessoas.length > 0" class="table table-striped ">
                     <thead>
                         <tr>
-                            <th>First Name</th>
-                            <th>Last Name</th>
+                            <th>Nome</th>
+                            <th>Sobrenome</th>
+                            <th>UF</th>
                             <th>Email</th>
-                            <th>Ativo</th>
-                            <th>Sincronizado</th>
-                            <th>#</th>
                             <th>#</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="pessoa in pessoas track by pessoa.id">
+                        <tr ng-repeat="pessoa in pessoas">
                             <td>{{pessoa.nome}}</td>
                             <td>{{pessoa.sobrenome}}</td>
+                            <td>{{pessoa.uf}}</td>
                             <td>{{pessoa.email}}</td>
-                            <td>{{(pessoa.ativo)?'Sim':'Não'}}</td>
-                            <td>{{(pessoa.sincronizado)?'Sim':'Não'}}</td>
-                            <td>
-                                <button ng-click="sincronizar(pessoa)">Sincronizar</button>
-                            </td>
                             <td>
                               <a href="javascript:void(0)" ng-click="edit(pessoa)">edit</a> | <a href="javascript:void(0)" ng-click="delete(pessoa)">delete</a>
                             </td>
@@ -109,6 +127,7 @@
                     </tbody>
                 </table>
             </div>
+        </div>
     </article>
   </section>
   

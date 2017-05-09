@@ -1,6 +1,6 @@
 var module = angular.module('app', ['indexedDB','angular.ping']);
 
-module.service('PessoaService', function (PessoaDAO, NuvemService, netTesting, $q) {
+module.service('PessoaService', function (PessoaDAO, NuvemService, netTesting, $q, $rootScope) {
     
     this.generateID = function() {
       var dt = new Date();
@@ -8,35 +8,22 @@ module.service('PessoaService', function (PessoaDAO, NuvemService, netTesting, $
         dt.getHours() + '' + dt.getMinutes() + '' + dt.getSeconds(); 
     };
 
-    this.list = function() {
+     this.listOnline = function() {
       var deferred = $q.defer();
-      NuvemService.listar().then(function(listServer){
-        var lista = [];
-        PessoaDAO.listFromIndexDB().then(function(results){
-          var listToReturn = [];
-          lista = lista.concat(results.filter(function(item){return !item.sincronizado}));
-          listToReturn = listToReturn.concat(lista);
+      NuvemService.listar().then(function(list){  
+          deferred.resolve(list);
+        },function(err){
+         deferred.reject(err); 
+      });
+      return deferred.promise;
+    }
 
-          for(var i=0;i<listServer.length;i++) {
-            var hasValue = false;
-            for(var j=0;i<lista.length;j++) {
-              if(lista[j].id == listServer[i].id) {
-                hasValue = true;
-                break;
-              }
-            }
-            
-            if (!hasValue) {
-              listToReturn.push(listServer[i]);
-            }
-          }
-         
-          deferred.resolve(listToReturn);
-        });
+    this.listOffline = function() {
+      var deferred = $q.defer();
+      PessoaDAO.listFromIndexDB().then(function(list){  
+         deferred.resolve(list);
       },function(err){
-        PessoaDAO.listFromIndexDB().then(function(results){
-          deferred.resolve(results);
-        });
+         deferred.reject(err); 
       });
       return deferred.promise;
     }
@@ -45,27 +32,25 @@ module.service('PessoaService', function (PessoaDAO, NuvemService, netTesting, $
       var deferred = $q.defer();
       if (!pessoa.id) {
         pessoa.id = this.generateID();
-        pessoa.ativo = true;
         PessoaDAO.salvarIndexDB(pessoa).then(function(e){
+          console.log($rootScope.online);
           NuvemService.salvar(pessoa).then(function(resNuvem){
-            pessoa.sincronizado = true;
-            PessoaDAO.upsertIndexDB(pessoa).then(function(e2){
-              deferred.resolve(e2);
-            });
-          },function(resNuvem) {
-              deferred.resolve(resNuvem);
-          })
+             PessoaDAO.removeIndexDB(pessoa.id).then(function(e){
+              deferred.resolve(e);
+             });
+          },function(err) {
+              deferred.resolve(err);
+          });
         });
       }
       else {
         PessoaDAO.upsertIndexDB(pessoa).then(function(res){
           NuvemService.atualizar(pessoa).then(function(resNuvem){
-            pessoa.sincronizado = true;
-            PessoaDAO.upsertIndexDB(pessoa).then(function(e2){
-              deferred.resolve(e2);
+            PessoaDAO.removeIndexDB(pessoa.id).then(function(e){
+              deferred.resolve(e);
             });
-          },function(resNuvem) {
-              deferred.resolve(resNuvem);
+          },function(err) {
+              deferred.resolve(err);
           })
         });
       }
@@ -79,9 +64,7 @@ module.service('PessoaService', function (PessoaDAO, NuvemService, netTesting, $
           deferred.resolve(e);
         });
       },function(resNuvem) {
-        pessoa.ativo = false;
-        pessoa.sincronizado = false;
-        PessoaDAO.upsertIndexDB(pessoa).then(function(e){
+        PessoaDAO.removeIndexDB(pessoa.id).then(function(e){
           deferred.resolve(e);
         });
       })
@@ -158,34 +141,78 @@ module.service('PessoaService', function (PessoaDAO, NuvemService, netTesting, $
       return deferred.promise;
     }
 
+    this.listarUfs = function() {
+      var deferred = $q.defer();
+      NuvemService.listarUfs().then(function(ufs){
+        deferred.resolve(ufs); 
+      },
+      function(err){
+        deferred.resolve([]);
+      });
+      return deferred.promise;
+    }
 });
 
-module.controller('PessoaController', function ($scope, PessoaService) {
+module.controller('PessoaController', function ($scope, $rootScope, PessoaService) {
 
-    $scope.list = function() {
-      PessoaService.list().then(function(results){
+    $scope.page = 'listar';
+    $scope.ultimaPesquisa  = undefined;
+    $scope.ufs = [];
+
+    $scope.limpar = function() {
+      $scope.pessoas = [];
+      $scope.pessoa = [];
+    }
+
+    $scope.listarUltimaPesquisa = function() {
+      if($scope.ultimaPesquisa == 'listarOnline') {
+        $scope.listarOnline();
+      }
+      else if($scope.ultimaPesquisa == 'listarOffline') {
+        $scope.listarOffline();
+      }
+    }
+
+    $scope.listarOnline = function() {
+      $scope.ultimaPesquisa  = 'listarOnline';
+      PessoaService.listOnline().then(function(results){
         $scope.pessoas = results;
+      },function(err){
+        $scope.limpar();
+      });
+    }
+
+    $scope.listarOffline = function() {
+      $scope.ultimaPesquisa  = 'listarOffline';
+      PessoaService.listOffline().then(function(results){
+        $scope.pessoas = results;
+      },function(err){
+        $scope.limpar();
       });
     }
 
     $scope.savePessoa = function () {
       PessoaService.save($scope.pessoa).then(function(e){
-        $scope.list();
-        $scope.pessoa = {};
+       $scope.limpar();
+       $scope.goListar();
       }); 
     }
 
     $scope.delete = function (id) {
       PessoaService.remove(id).then(function(e){
-        $scope.list();
-        $scope.pessoa = {};
+       $scope.limpar();
+       $scope.listarUltimaPesquisa();
       }); 
+    }
+
+    $scope.cancelar = function () {
+      $scope.limpar();
+      $scope.goListar();
     }
 
     $scope.edit = function (pessoa) {
       PessoaService.load(pessoa.id).then(function(result){
         $scope.pessoa = result;
-        $scope.pessoa.sincronizado = false;
       }); 
     }
 
@@ -193,10 +220,26 @@ module.controller('PessoaController', function ($scope, PessoaService) {
       PessoaService.sincronizar(pessoa).then(function(res){
         $scope.list();
       },function(err){
-        pessoa.sincronizado = false;
         alert("Não foi possivel sincronizar.");
       });
     };
 
-    $scope.online = true;
+    $scope.listarUfs = function() {
+      PessoaService.listarUfs().then(function(ufs){
+        $scope.ufs = ufs;
+      });
+    }
+
+    $scope.changeConnection = function(value) {
+      $rootScope.online = value;
+    }
+
+    $scope.goNovo = function() {
+      $scope.page = 'novo';
+    }
+
+    $scope.goListar = function() {
+      $scope.page = 'listar';
+    }
+
 });

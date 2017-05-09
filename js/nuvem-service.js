@@ -1,22 +1,32 @@
 var module = angular.module('app');
 
 
-module.service('NuvemService', function ($q,$http) {
+module.service('NuvemService', function ($q,$http, $rootScope) {
     
     var db = "pessoa";
     var collection = "pessoa";
     var baseURL = 'https://api.mlab.com/api/1/databases/'+db+'/collections/'+collection+'?apiKey=h5HXau-eQBL5VoAn_xk5puC-FRBF4RH1';
-   
-    this.salvar = function(pessoa) {
-      var deferred = $q.defer();
-      var pessoaPersist = {
+    var urlDadosGerais = 'http://10.31.0.72:8080/sinesp-rest/api/dadosgerais/';
+
+    this.getPessoaCopy = function(pessoa) {
+      return {
         id:pessoa.id,
         nome:pessoa.nome,
         sobrenome:pessoa.sobrenome,
         email:pessoa.email,
-        ativo:true,
-        sincronizado:true
+        uf:pessoa.uf
       };
+    }
+
+    this.salvar = function(pessoa) {
+      var deferred = $q.defer();
+
+      if(!$rootScope.online) {
+        deferred.reject();
+        return deferred.promise;
+      }
+
+      var pessoaPersist = this.getPessoaCopy(pessoa);
       $http.post(baseURL, JSON.stringify(pessoaPersist),{headers :{'Content-Type': 'application/json'}}).success(function(resp) {
          deferred.resolve(resp);
       }).error(function(err,status){
@@ -27,14 +37,13 @@ module.service('NuvemService', function ($q,$http) {
 
     this.atualizar = function(pessoa) {
       var deferred = $q.defer();
-       var pessoaPersist = {
-        id:pessoa.id, 
-        nome:pessoa.nome,
-        sobrenome:pessoa.sobrenome,
-        email:pessoa.email,
-        ativo:pessoa.ativo,
-        sincronizado:true
-      };
+
+      if(!$rootScope.online) {
+        deferred.reject();
+        return deferred.promise;
+      }
+
+      var pessoaPersist = this.getPessoaCopy(pessoa);
       var command = '{ "$set" : ' + JSON.stringify(pessoaPersist) + ' }' ;
       $http.put(baseURL, command).success(function(resp) {
         deferred.resolve(resp);
@@ -46,6 +55,12 @@ module.service('NuvemService', function ($q,$http) {
 
     this.remover = function(pessoa) {
       var deferred = $q.defer();
+
+      if(!$rootScope.online) {
+        deferred.reject();
+        return deferred.promise;
+      }
+
       this.obter(pessoa.id).then(function(pess){
         var url = 'https://api.mlab.com/api/1/databases/'+db+'/collections/'+collection+'/' + pess._id.$oid + '?apiKey=h5HXau-eQBL5VoAn_xk5puC-FRBF4RH1';
         $http.delete(url).success(function(resp) {
@@ -61,6 +76,12 @@ module.service('NuvemService', function ($q,$http) {
 
     this.listar = function(pessoa) {
       var deferred = $q.defer();
+
+      if(!$rootScope.online) {
+        deferred.reject();
+        return deferred.promise;
+      }
+
       $http.get(baseURL).success(function(resp) {
          if (resp && resp.length > 0) {
            deferred.resolve(resp);   
@@ -76,6 +97,12 @@ module.service('NuvemService', function ($q,$http) {
 
     this.obter = function(id) {
       var deferred = $q.defer();
+
+      if(!$rootScope.online) {
+        deferred.reject();
+        return deferred.promise;
+      }
+
       var url = 'https://api.mlab.com/api/1/databases/'+db+'/collections/'+collection+'?q={"id":"'+id+'"}&apiKey=h5HXau-eQBL5VoAn_xk5puC-FRBF4RH1';
       $http.get(url).success(function(resp) {
         if (resp && resp.length > 0) {
@@ -89,5 +116,26 @@ module.service('NuvemService', function ($q,$http) {
       });
       return deferred.promise;
     }
-   
+    
+    this.listarUfs = function(pessoa) {
+      var deferred = $q.defer();
+
+      if(!$rootScope.online) {
+        deferred.reject();
+        return deferred.promise;
+      }
+
+      $http.get(urlDadosGerais+'listaUf').success(function(resp) {
+         if (resp && resp.length > 0) {
+           deferred.resolve(resp);   
+         }
+         else {
+           deferred.reject(resp); 
+         }
+      }).error(function(err){
+         deferred.reject(err);
+      });
+      return deferred.promise;
+    }
+    
 });
