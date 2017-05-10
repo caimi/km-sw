@@ -80,6 +80,7 @@ module.service('PessoaService', function (PessoaDAO, NuvemService, netTesting, $
           deferred.resolve(pessoaNuvem); 
         },
         function(err){
+          alert('Não foi possivel carregar item estando offline, pois o mesmo encontra-se no servidor.');
           deferred.reject(err);
         });
       });
