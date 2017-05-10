@@ -33,7 +33,7 @@
             <div class="col-md-12">
                 <div class="col-md-6">
                     <span class=" blue-grey-text"> 
-                        <input type="checkbox" ng-change="changeConnection(connection)" ng-model="connection" />Online
+                        <input type="checkbox" ng-change="changeConnection(online)" ng-model="online" />Online
                     </span>
                 </div>
                 <div class="col-md-6">
@@ -99,6 +99,9 @@
               <div class="col-sm-6">
                 <button ng-disabled="!online" ng-click="listarOnline()" class="btn btn-primary">Listar Online</button>
                 <button ng-click="listarOffline()" class="btn btn-primary">Listar Offline</button>
+                <button ng-disabled="!online" ng-click="sincronizar()" class="btn btn-primary">
+                    <i class="material-icons">backup</i>
+                </button>
               </div>
             </div>
             <div class="row">    

@@ -20,7 +20,7 @@ module.service('NuvemService', function ($q,$http, $rootScope) {
 
     this.salvar = function(pessoa) {
       var deferred = $q.defer();
-
+      
       if(!$rootScope.online) {
         deferred.reject();
         return deferred.promise;
@@ -127,6 +127,7 @@ module.service('NuvemService', function ($q,$http, $rootScope) {
 
       $http.get(urlDadosGerais+'listaUf').success(function(resp) {
          if (resp && resp.length > 0) {
+           localStorage.setItem('ufs',JSON.stringify(resp));
            deferred.resolve(resp);   
          }
          else {
