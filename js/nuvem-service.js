@@ -14,7 +14,8 @@ module.service('NuvemService', function ($q,$http, $rootScope) {
         nome:pessoa.nome,
         sobrenome:pessoa.sobrenome,
         email:pessoa.email,
-        uf:pessoa.uf
+        uf:pessoa.uf,
+        idBloqueio:pessoa.idBloqueio
       };
     }
 
@@ -44,8 +45,9 @@ module.service('NuvemService', function ($q,$http, $rootScope) {
       }
 
       var pessoaPersist = this.getPessoaCopy(pessoa);
+      var url = 'https://api.mlab.com/api/1/databases/'+db+'/collections/'+collection+'?q={"id":"'+pessoaPersist.id+'"}&apiKey=h5HXau-eQBL5VoAn_xk5puC-FRBF4RH1';
       var command = '{ "$set" : ' + JSON.stringify(pessoaPersist) + ' }' ;
-      $http.put(baseURL, command).success(function(resp) {
+      $http.put(url, command).success(function(resp) {
         deferred.resolve(resp);
       }).error(function(err,status){
          deferred.reject(err);

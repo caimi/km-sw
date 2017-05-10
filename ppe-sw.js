@@ -30,9 +30,6 @@ self.addEventListener('install', function(event) {
 self.addEventListener('fetch', function(evt) {
   console.log('The service worker is serving the asset.');
   
-  if (evt && evt.request && evt.request.url.match('api.mlab.com')) {
-    return fetch(evt.request);
-  }
   evt.respondWith(fromNetwork(evt.request, 400).catch(function () {
     return fromCache(evt.request);
   }));

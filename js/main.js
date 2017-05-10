@@ -72,12 +72,23 @@ module.service('PessoaService', function (PessoaDAO, NuvemService, netTesting, $
 
     this.load = function(id) {
       var deferred = $q.defer();
+      var isSameMachineFunction = this.isSameMachine;
+
       PessoaDAO.loadFromIndexDB(id).then(function(pessoa){
         deferred.resolve(pessoa);
       },
       function(err){
         NuvemService.obter(id).then(function(pessoaNuvem){
-          deferred.resolve(pessoaNuvem); 
+          if (!isSameMachineFunction(pessoaNuvem.idBloqueio)) {
+            alert('O registro foi bloqueado por outro usuário');
+            deferred.reject(err);
+          }
+          pessoaNuvem.idBloqueio = localStorage.getItem('hash');
+          NuvemService.atualizar(pessoaNuvem).then(function(resNuvem){
+            deferred.resolve(pessoaNuvem); 
+          },function(err) {
+              deferred.reject(err);
+          })
         },
         function(err){
           alert('Não foi possivel carregar item estando offline, pois o mesmo encontra-se no servidor.');
@@ -89,10 +100,11 @@ module.service('PessoaService', function (PessoaDAO, NuvemService, netTesting, $
     }
 
     this.sincronizar = function(pessoa) {
-      var deferred = $q.defer();     
+      var deferred = $q.defer();
+      pessoa.idBloqueio = undefined;     
       NuvemService.obter(pessoa.id).then(function(pessoaNuvem){
         NuvemService.atualizar(pessoa).then(function(resNuvem){
-          PessoaDAO.removeIndexDB(pessoa.id).then(function(e){
+          PessoaDAO.removeIndexDB(pessoaNuvem.id).then(function(e){
             deferred.resolve(e);
           });
         },function(resNuvem) {
@@ -122,6 +134,28 @@ module.service('PessoaService', function (PessoaDAO, NuvemService, netTesting, $
       });
       return deferred.promise;
     }
+
+    this.generateHash = function() {
+      var text = localStorage.getItem('hash');
+      if (!text || text == null) {
+        text = '';
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for( var i=0; i < 10; i++ ) {
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        localStorage.setItem('hash',text);
+      }
+      return localStorage.getItem('hash');
+    }
+
+    this.isSameMachine = function(idBloqueio) {
+      if(!idBloqueio) {
+        return true;
+      }
+      var text = localStorage.getItem('hash');
+      return text == idBloqueio;
+    }
+    
 });
 
 module.controller('PessoaController', function ($scope, $rootScope, PessoaService) {
@@ -223,4 +257,5 @@ module.controller('PessoaController', function ($scope, $rootScope, PessoaServic
       $scope.page = 'listar';
     }
 
+    PessoaService.generateHash();
 });
