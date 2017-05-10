@@ -83,7 +83,10 @@ module.service('PessoaService', function (PessoaDAO, NuvemService, netTesting, $
             alert('O registro foi bloqueado por outro usuário');
             deferred.reject(err);
           }
-          pessoaNuvem.idBloqueio = localStorage.getItem('hash');
+          else {
+            pessoaNuvem.idBloqueio = localStorage.getItem('hash');
+          }
+          
           NuvemService.atualizar(pessoaNuvem).then(function(resNuvem){
             deferred.resolve(pessoaNuvem); 
           },function(err) {
