@@ -114,7 +114,7 @@
                             <th>Sobrenome</th>
                             <th>UF</th>
                             <th>Email</th>
-                            <th>#</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -124,7 +124,8 @@
                             <td>{{pessoa.uf}}</td>
                             <td>{{pessoa.email}}</td>
                             <td>
-                              <a href="javascript:void(0)" ng-click="edit(pessoa)">edit</a> | <a href="javascript:void(0)" ng-click="delete(pessoa)">delete</a>
+                              <a href="javascript:void(0)" ng-click="edit(pessoa)"><i class="material-icons right">assignment</i></a> 
+                              <a href="javascript:void(0)" ng-click="delete(pessoa)"><i class="material-icons right">delete</i></a>
                             </td>
                         </tr>
                     </tbody>
